@@ -1,0 +1,118 @@
+<head>
+<meta charset="UTF-8">
+<title>Adivina el número</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.contenedor{
+    background: white;
+    width: 400px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+button{
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.resultado{
+    font-weight: bold;
+    margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+    <h2>Adivina el número</h2>
+    <p>Elige un número entre 1 y 100</p>
+
+    <input type="number" id="entrada" min="1" max="100">
+    <br>
+    <button onclick="verificar()">Adivinar</button>
+
+    <p>Intentos anteriores: <span id="historial">Ninguno</span></p>
+    <p class="resultado" id="resultado"></p>
+    <p id="pista"></p>
+
+    <button id="reiniciar" onclick="reiniciarJuego()" style="display:none;">
+        Jugar otra vez
+    </button>
+</div>
+
+<script>
+let numeroSecreto = Math.floor(Math.random()*100)+1;
+let intentos = 0;
+let maxIntentos = 10;
+let historial = [];
+
+function verificar(){
+
+    let entrada = document.getElementById("entrada");
+    let valor = Number(entrada.value);
+    let resultado = document.getElementById("resultado");
+    let pista = document.getElementById("pista");
+    let historialTexto = document.getElementById("historial");
+
+    if(intentos >= maxIntentos) return;
+
+    intentos++;
+    historial.push(valor);
+    historialTexto.textContent = historial.join(", ");
+
+    if(valor === numeroSecreto){
+        resultado.textContent = "🎉 ¡Correcto! Adivinaste el número.";
+        terminarJuego();
+    }
+    else if(intentos === maxIntentos){
+        resultado.textContent = "💀 Se acabaron los intentos.";
+        pista.textContent = "El número era: " + numeroSecreto;
+        terminarJuego();
+    }
+    else{
+        resultado.textContent = "❌ Incorrecto.";
+
+        if(valor < numeroSecreto){
+            pista.textContent = "Te quedaste corto.";
+        }else{
+            pista.textContent = "Te pasaste.";
+        }
+    }
+
+    entrada.value = "";
+    entrada.focus();
+}
+
+function terminarJuego(){
+    document.getElementById("entrada").disabled = true;
+    document.getElementById("reiniciar").style.display = "inline";
+}
+
+function reiniciarJuego(){
+    numeroSecreto = Math.floor(Math.random()*100)+1;
+    intentos = 0;
+    historial = [];
+
+    document.getElementById("entrada").disabled = false;
+    document.getElementById("historial").textContent = "Ninguno";
+    document.getElementById("resultado").textContent = "";
+    document.getElementById("pista").textContent = "";
+    document.getElementById("reiniciar").style.display = "none";
+}
+</script>
+
+</body>
+</html>
